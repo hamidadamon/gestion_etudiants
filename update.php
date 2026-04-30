@@ -8,7 +8,6 @@ if ($id <= 0) {
     exit;
 }
 
-// Récupérer l'étudiant
 $stmt = $pdo->prepare("SELECT * FROM etudiants WHERE id = :id");
 $stmt->execute([':id' => $id]);
 $etudiant = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -18,19 +17,58 @@ if (!$etudiant) {
     exit;
 }
 
-// Récupérer les filières
 $filieres = $pdo->query("SELECT * FROM filieres ORDER BY nom")->fetchAll(PDO::FETCH_ASSOC);
 
-// Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nom     = trim($_POST['nom'] ?? '');
-    $prenom  = trim($_POST['prenom'] ?? '');
-    $filiere = $_POST['filiere_id'] ?? '';
+    $nom     = trim($_POST['nom']);
+    $prenom  = trim($_POST['prenom']);
+    $filiere = $_POST['filiere_id'];
 
     if (!empty($nom) && !empty($prenom) && !empty($filiere)) {
-        $stmt = $pdo->prepare("UPDATE etudiants SET nom = :nom, prenom = :prenom, filiere_id = :filiere_id WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE etudiants SET nom=:nom, prenom=:prenom, filiere_id=:filiere_id WHERE id=:id");
         $stmt->execute([
-            ':nom'        => $nom,
-            ':prenom'     => $prenom,
+            ':nom' => $nom,
+            ':prenom' => $prenom,
             ':filiere_id' => (int) $filiere,
-            ':id'
+            ':id' => $id
+        ]);
+        header("Location: index.php?msg=modif");
+        exit;
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<h1>Modifier un etudiant</h1>
+<form id="form-update" action="update.php?id=<?= $id ?>" method="POST">
+    <label>Nom :</label>
+    <input type="text" id="nom" name="nom" value="<?= htmlspecialchars($etudiant['nom']) ?>"><br>
+    <span class="error-msg" id="err-nom"></span>
+
+    <label>Prenom :</label>
+    <input type="text" id="prenom" name="prenom" value="<?= htmlspecialchars($etudiant['prenom']) ?>"><br>
+    <span class="error-msg" id="err-prenom"></span>
+
+    <label>Filiere :</label>
+    <select id="filiere_id" name="filiere_id">
+        <option value="">-- Choisir --</option>
+        <?php foreach ($filieres as $f): ?>
+            <option value="<?= $f['id'] ?>" <?= ($f['id'] == $etudiant['filiere_id']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($f['nom']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select><br>
+    <span class="error-msg" id="err-filiere"></span>
+
+    <button type="submit">Enregistrer</button>
+    <a href="index.php">Annuler</a>
+</form>
+<script src="assets/js/script.js"></script>
+</body>
+</html>
