@@ -41,34 +41,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Modifier</title>
+    <title>Modifier un etudiant</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<h1>Modifier un etudiant</h1>
-<form id="form-update" action="update.php?id=<?= $id ?>" method="POST">
-    <label>Nom :</label>
-    <input type="text" id="nom" name="nom" value="<?= htmlspecialchars($etudiant['nom']) ?>"><br>
-    <span class="error-msg" id="err-nom"></span>
+<div class="container">
 
-    <label>Prenom :</label>
-    <input type="text" id="prenom" name="prenom" value="<?= htmlspecialchars($etudiant['prenom']) ?>"><br>
-    <span class="error-msg" id="err-prenom"></span>
+    <h1>Modifier un etudiant</h1>
 
-    <label>Filiere :</label>
-    <select id="filiere_id" name="filiere_id">
-        <option value="">-- Choisir --</option>
-        <?php foreach ($filieres as $f): ?>
-            <option value="<?= $f['id'] ?>" <?= ($f['id'] == $etudiant['filiere_id']) ? 'selected' : '' ?>>
-                <?= htmlspecialchars($f['nom']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select><br>
-    <span class="error-msg" id="err-filiere"></span>
+    <form id="form-update" action="update.php?id=<?= $id ?>" method="POST">
+        <label>Nom :</label>
+        <input type="text" id="nom" name="nom" value="<?= htmlspecialchars($etudiant['nom']) ?>">
+        <span class="error-msg" id="err-nom"></span>
 
-    <button type="submit">Enregistrer</button>
-    <a href="index.php">Annuler</a>
-</form>
+        <label>Prenom :</label>
+        <input type="text" id="prenom" name="prenom" value="<?= htmlspecialchars($etudiant['prenom']) ?>">
+        <span class="error-msg" id="err-prenom"></span>
+
+        <label>Filiere :</label>
+        <select id="filiere_id" name="filiere_id">
+            <option value="">-- Choisir --</option>
+            <?php foreach ($filieres as $f): ?>
+                <option value="<?= $f['id'] ?>" <?= ($f['id'] == $etudiant['filiere_id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($f['nom']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <span class="error-msg" id="err-filiere"></span>
+
+        <button type="submit">Enregistrer</button>
+        <a href="index.php">Annuler</a>
+    </form>
+
+</div>
 <script src="assets/js/script.js"></script>
 </body>
 </html>
